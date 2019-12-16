@@ -1,0 +1,32 @@
+version: "3"
+services:
+  db:
+    image: mysql:8.0.17
+    volumes:
+      - ./../mysql:/etc/mysql/conf.d
+    command: --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_ROOT_PASSWORD: helloworld
+      MYSQL_DATABASE: phpapp
+    restart: always
+    ports:
+      - "3306:3306"
+    networks:
+      - web 
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    environment:
+      PMA_PORT: 3306
+      PMA_HOST: db
+      PMA_USER: root
+      PMA_PASSWORD: helloworld
+    ports:
+      - "8000:80"
+    restart: always
+    depends_on: 
+      - db
+    networks:
+      - web
+networks: 
+  web:
+    driver: bridge
